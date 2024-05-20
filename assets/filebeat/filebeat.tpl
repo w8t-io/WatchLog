@@ -1,5 +1,6 @@
 {{range .configList}}
-- type: log
+- type: container
+  stream: stdout
   enabled: true
   paths:
       - {{ .HostDir }}/{{ .File }}
