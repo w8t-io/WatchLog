@@ -26,6 +26,12 @@ func NewContext(baseDir string, p filebeat.InterFilebeatPointer) *Context {
 		containerCli = container.NewClient()
 	}
 
+	logPrefix := "watchlog"
+	lp := os.Getenv("LOG_PREFIX")
+	if lp != "" {
+		logPrefix = lp
+	}
+
 	return &Context{
 		types.Pilot{
 			Context:      context.Background(),
@@ -35,7 +41,7 @@ func NewContext(baseDir string, p filebeat.InterFilebeatPointer) *Context {
 			ReloadChan:   make(chan bool),
 			StopChan:     make(chan bool),
 			Piloter:      p,
-			LogPrefix:    "watchlog",
+			LogPrefix:    logPrefix,
 		},
 	}
 }

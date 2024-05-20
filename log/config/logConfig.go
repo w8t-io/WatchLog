@@ -42,11 +42,13 @@ func GetLogConfigs(logPrefix string, jsonLogPath string, labels map[string]strin
 	root := nodeInfo.NewLogInfoNode("")
 
 	for _, label := range labelNames {
-		if !strings.HasPrefix(label, fmt.Sprintf(LabelServiceLogsTmpl, logPrefix)) {
+		prefix := fmt.Sprintf(LabelServiceLogsTmpl, logPrefix)
+		newLogPrefix := strings.Replace(prefix, "_", ".", -1)
+		if !strings.HasPrefix(label, newLogPrefix) {
 			continue
 		}
 
-		logLabel := strings.TrimPrefix(label, fmt.Sprintf(LabelServiceLogsTmpl, logPrefix))
+		logLabel := strings.TrimPrefix(label, newLogPrefix)
 		key := strings.Split(logLabel, ".")
 		if err := root.Insert(key, labels[label]); err != nil {
 			log.Errorf("%s", err.Error())
