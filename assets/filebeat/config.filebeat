@@ -68,7 +68,7 @@ output.elasticsearch:
     ${ELASTICSEARCH_PATH:+path: ${ELASTICSEARCH_PATH}}
     ${ELASTICSEARCH_BULK_MAX_SIZE:+bulk_max_size: ${ELASTICSEARCH_BULK_MAX_SIZE}}
     indices:
-      - index: "watchlog-%{+yyy-MM.dd}"
+      - index: "${LOG_PREFIX}-%{+yyy-MM.dd}"
 EOF
 }
 
