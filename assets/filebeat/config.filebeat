@@ -19,7 +19,7 @@ assert_not_empty() {
     arg=$1
     shift
     if [ -z "$arg" ]; then
-        echo "ERROR $@"
+        ${BIN}/echo "ERROR $@"
         exit 1
     fi
 }
@@ -44,12 +44,12 @@ EOF
 
 es() {
 if [ -f "/run/secrets/es_credential" ]; then
-    ELASTICSEARCH_USER=$(cat /run/secrets/es_credential | awk -F":" '{ print $1 }')
-    ELASTICSEARCH_PASSWORD=$(cat /run/secrets/es_credential | awk -F":" '{ print $2 }')
+    ELASTICSEARCH_USER=$(${BIN}/cat /run/secrets/es_credential | ${BIN}/awk -F":" '{ print $1 }')
+    ELASTICSEARCH_PASSWORD=$(${BIN}/cat /run/secrets/es_credential | ${BIN}/awk -F":" '{ print $2 }')
 fi
 
 if [ -n "$ELASTICSEARCH_HOSTS" ]; then
-    ELASTICSEARCH_HOSTS=$(echo $ELASTICSEARCH_HOSTS|awk -F, '{for(i=1;i<=NF;i++){printf "\"%s\",", $i}}')
+    ELASTICSEARCH_HOSTS=$(${BIN}/echo $ELASTICSEARCH_HOSTS| ${BIN}/awk -F, '{for(i=1;i<=NF;i++){printf "\"%s\",", $i}}')
     ELASTICSEARCH_HOSTS=${ELASTICSEARCH_HOSTS%,}
 else
     assert_not_empty "$ELASTICSEARCH_HOST" "ELASTICSEARCH_HOST required"
@@ -73,8 +73,8 @@ EOF
 }
 
 default() {
-echo "use default output"
-cat >> $FILEBEAT_CONFIG << EOF
+${BIN}/echo "use default output"
+${BIN}/cat >> $FILEBEAT_CONFIG << EOF
 $(base)
 output.console:
     pretty: ${CONSOLE_PRETTY:-false}
@@ -84,7 +84,7 @@ EOF
 file() {
 assert_not_empty "$FILE_PATH" "FILE_PATH required"
 
-cat >> $FILEBEAT_CONFIG << EOF
+${BIN}/cat >> $FILEBEAT_CONFIG << EOF
 $(base)
 output.file:
     path: $FILE_PATH
@@ -99,7 +99,7 @@ logstash() {
 assert_not_empty "$LOGSTASH_HOST" "LOGSTASH_HOST required"
 assert_not_empty "$LOGSTASH_PORT" "LOGSTASH_PORT required"
 
-cat >> $FILEBEAT_CONFIG << EOF
+${BIN}/cat >> $FILEBEAT_CONFIG << EOF
 $(base)
 output.logstash:
     hosts: ["$LOGSTASH_HOST:$LOGSTASH_PORT"]
@@ -115,7 +115,7 @@ redis() {
 assert_not_empty "$REDIS_HOST" "REDIS_HOST required"
 assert_not_empty "$REDIS_PORT" "REDIS_PORT required"
 
-cat >> $FILEBEAT_CONFIG << EOF
+${BIN}/cat >> $FILEBEAT_CONFIG << EOF
 $(base)
 output.redis:
     hosts: ["$REDIS_HOST:$REDIS_PORT"]
@@ -131,10 +131,10 @@ EOF
 
 kafka() {
 assert_not_empty "$KAFKA_BROKERS" "KAFKA_BROKERS required"
-KAFKA_BROKERS=$(echo $KAFKA_BROKERS|awk -F, '{for(i=1;i<=NF;i++){printf "\"%s\",", $i}}')
+KAFKA_BROKERS=$(${BIN}/echo $KAFKA_BROKERS| ${BIN}/awk -F, '{for(i=1;i<=NF;i++){printf "\"%s\",", $i}}')
 KAFKA_BROKERS=${KAFKA_BROKERS%,}
 
-cat >> $FILEBEAT_CONFIG << EOF
+${BIN}/cat >> $FILEBEAT_CONFIG << EOF
 $(base)
 output.kafka:
     hosts: [$KAFKA_BROKERS]
@@ -157,7 +157,7 @@ EOF
 }
 
 count(){
-cat >> $FILEBEAT_CONFIG << EOF
+${BIN}/cat >> $FILEBEAT_CONFIG << EOF
 $(base)
 output.count:
 EOF
