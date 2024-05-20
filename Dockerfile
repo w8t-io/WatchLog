@@ -14,7 +14,7 @@ RUN go mod tidy && \
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o point ./main.go && \
     chmod 777 point
 
-FROM elastic/filebeat:6.8.23
+FROM elastic/filebeat:7.17.10
 
 USER root
 
@@ -22,7 +22,9 @@ COPY --from=build /workspace/point /usr/share/filebeat/point/point
 
 COPY assets/entrypoint assets/filebeat/ assets/healthz /usr/share/filebeat/point/
 
-RUN /usr/bin/chmod +x /usr/share/filebeat/point/point /usr/share/filebeat/point/healthz /usr/share/filebeat/point/config.filebeat
+RUN apt-get update && \
+    apt-get -y install python2 && \
+    /usr/bin/chmod +x /usr/share/filebeat/point/point /usr/share/filebeat/point/healthz /usr/share/filebeat/point/config.filebeat
 
 HEALTHCHECK CMD /usr/share/filebeat/healthz
 
