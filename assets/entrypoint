@@ -1,17 +1,22 @@
 #!/usr/bin/python
 # coding: utf-8
+
 import os
 import os.path
 import subprocess
 
 base = '/host'
+pilot_filebeat = "filebeat"
+ENV_PILOT_TYPE = "PILOT_TYPE"
+
 
 def umount(volume):
     subprocess.check_call('umount -l %s' % volume, shell=True)
 
+
 def mount_points():
     with open('/proc/self/mountinfo', 'r') as f:
-    mounts = f.read().decode('utf-8')
+        mounts = f.read().decode('utf-8')
 
     points = set()
     for line in mounts.split('\n'):
@@ -20,18 +25,28 @@ def mount_points():
             points.add(mtab[4])
     return points
 
+
 def cleanup():
     umounts = mount_points()
     for volume in sorted(umounts, reverse=True):
         umount(volume)
 
+
 def run():
-    tpl_config = "/usr/share/filebeat/point/filebeat.tpl"
+    pilot_type = os.environ.get(ENV_PILOT_TYPE)
+    if pilot_filebeat == pilot_type:
+        tpl_config = "/usr/share/filebeat/point/filebeat.tpl"
+
     os.execve('/usr/share/filebeat/point/point', ['/usr/share/filebeat/point/point', '-template', tpl_config, '-base', base, '-log-level', 'debug'],
               os.environ)
 
+
 def config():
-    subprocess.check_call(['/usr/share/filebeat/point/config.filebeat'])
+    pilot_type = os.environ.get(ENV_PILOT_TYPE)
+    if pilot_filebeat == pilot_type:
+        print "start log-pilot:", pilot_filebeat
+        subprocess.check_call(['/usr/share/filebeat/point/config.filebeat'])
+
 
 if __name__ == '__main__':
     config()

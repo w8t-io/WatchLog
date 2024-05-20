@@ -22,7 +22,6 @@ spec:
     spec:
       containers:
         - env:
-            # RUNTIME_TYPE 容器运行时类型, 支持 Docker、Containerd
             - name: RUNTIME_TYPE
               value: docker
             - name: LOGGING_OUTPUT
