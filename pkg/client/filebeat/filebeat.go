@@ -196,7 +196,7 @@ func (p *FilebeatPointer) canRemoveConf(container string, registry map[string]Re
 				log.Warnf("%s->%s registry not exist", container, logFile)
 				continue
 			}
-			if registry[logFile].Offset < info.Size() {
+			if registry[logFile].V.Offset < info.Size() {
 				if autoMount { // ephemeral logs
 					log.Infof("%s->%s does not finish to read", container, logFile)
 					return false
@@ -276,18 +276,17 @@ func (p *FilebeatPointer) getRegistryState() (map[string]RegistryState, error) {
 	defer f.Close()
 
 	decoder := json.NewDecoder(f)
-	states := make([]RegistryState, 0)
-	err = decoder.Decode(&states)
+	var state RegistryState
+	err = decoder.Decode(&state)
 	if err != nil {
 		return nil, err
 	}
 
 	statesMap := make(map[string]RegistryState, 0)
-	for _, state := range states {
-		if _, ok := statesMap[state.Source]; !ok {
-			statesMap[state.Source] = state
-		}
+	if _, ok := statesMap[state.V.Source]; !ok {
+		statesMap[state.V.Source] = state
 	}
+
 	return statesMap, nil
 }
 

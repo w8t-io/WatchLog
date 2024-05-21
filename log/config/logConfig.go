@@ -116,9 +116,7 @@ func parseLogConfig(name string, info *nodeInfo.LogInfoNode, jsonLogPath string)
 	rt := os.Getenv("RUNTIME_TYPE")
 	var lt string
 	switch rt {
-	case "docker":
-		lt = "log"
-	case "containerd":
+	case "docker", "containerd":
 		lt = "container"
 	}
 
