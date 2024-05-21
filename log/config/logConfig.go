@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -12,17 +13,17 @@ import (
 
 // LogConfig log configuration
 type LogConfig struct {
-	Name         string
-	HostDir      string
-	ContainerDir string
-	Format       string
-	FormatConfig map[string]string
-	File         string
-	Tags         map[string]string
-	Target       string
-	EstimateTime bool
-	Stdout       bool
-
+	Name          string
+	HostDir       string
+	ContainerDir  string
+	Format        string
+	FormatConfig  map[string]string
+	File          string
+	Tags          map[string]string
+	Target        string
+	EstimateTime  bool
+	Stdout        bool
+	LogType       string
 	CustomFields  map[string]string
 	CustomConfigs map[string]string
 }
@@ -112,6 +113,15 @@ func parseLogConfig(name string, info *nodeInfo.LogInfoNode, jsonLogPath string)
 		delete(formatConfig, "pattern")
 	}
 
+	rt := os.Getenv("RUNTIME_TYPE")
+	var lt string
+	switch rt {
+	case "docker":
+		lt = "log"
+	case "containerd":
+		lt = "container"
+	}
+
 	cfg := new(LogConfig)
 	// 标准输出日志
 	if path == "stdout" {
@@ -127,6 +137,7 @@ func parseLogConfig(name string, info *nodeInfo.LogInfoNode, jsonLogPath string)
 			Target:       target,
 			EstimateTime: false,
 			Stdout:       true,
+			LogType:      lt,
 		}
 	}
 
