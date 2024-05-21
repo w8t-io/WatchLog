@@ -1,5 +1,5 @@
 {{range .configList}}
-- type: container
+- type: {{ .LogType }}
   stream: stdout
   enabled: true
   paths:
