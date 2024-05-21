@@ -11,7 +11,7 @@ import (
 const (
 	FilebeatBaseConf = "/usr/share/filebeat"
 	FilebeatExecCmd  = FilebeatBaseConf + "/filebeat"
-	FilebeatRegistry = FilebeatBaseConf + "/data/registry"
+	FilebeatRegistry = FilebeatBaseConf + "/data/registry/filebeat/log.json"
 	FilebeatConfDir  = FilebeatBaseConf + "/inputs.d"
 	FilebeatConfFile = FilebeatBaseConf + "/filebeat.yml"
 
@@ -44,9 +44,14 @@ type FileInode struct {
 
 // RegistryState represents log offsets
 type RegistryState struct {
+	K string    `json:"k"`
+	V RegistryV `json:"v"`
+}
+
+type RegistryV struct {
 	Source      string        `json:"source"`
 	Offset      int64         `json:"offset"`
-	Timestamp   time.Time     `json:"timestamp"`
+	Timestamp   []time.Time   `json:"timestamp"`
 	TTL         time.Duration `json:"ttl"`
 	Type        string        `json:"type"`
 	FileStateOS FileInode

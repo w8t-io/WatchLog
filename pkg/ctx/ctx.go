@@ -28,7 +28,7 @@ func NewContext(baseDir string, p filebeat.InterFilebeatPointer) *Context {
 
 	logPrefix := "watchlog"
 	lp := os.Getenv("LOG_PREFIX")
-	if lp != "" {
+	if len(lp) > 1 {
 		logPrefix = lp
 	}
 
