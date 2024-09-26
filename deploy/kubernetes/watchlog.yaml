@@ -61,10 +61,8 @@ spec:
             - mountPath: /host
               name: root
               readOnly: true
-            - mountPath: /var/lib/filebeat
-              name: varlib
-            - mountPath: /var/log/filebeat
-              name: varlog
+            - mountPath: /usr/share/filebeat
+              name: filebeat
 
       restartPolicy: Always
 
@@ -88,8 +86,4 @@ spec:
         - hostPath:
             path: /var/lib/filebeat
             type: DirectoryOrCreate
-          name: varlib
-        - hostPath:
-            path: /var/log/filebeat
-            type: DirectoryOrCreate
-          name: varlog
+          name: filebeat
