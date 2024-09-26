@@ -61,8 +61,10 @@ spec:
             - mountPath: /host
               name: root
               readOnly: true
-            - mountPath: /usr/share/filebeat
-              name: filebeat
+            - mountPath: /usr/share/filebeat/data
+              name: data
+            - mountPath: /usr/share/filebeat/logs
+              name: logs
 
       restartPolicy: Always
 
@@ -84,6 +86,10 @@ spec:
             type: ""
           name: root
         - hostPath:
-            path: /var/lib/filebeat
+            path: /var/lib/filebeat/data
             type: DirectoryOrCreate
-          name: filebeat
+          name: data
+        - hostPath:
+            path: /var/log/filebeat
+            type: DirectoryOrCreate
+          name: logs
