@@ -35,21 +35,19 @@ jobs:
       - name: Set env variables
         id: set_env
         run: |
-          echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}"
-          echo "SHORT_SHA=${GITHUB_SHA:0:4}"
-          echo "DATE=$(TZ=Asia/Shanghai date +%Y-%m-%d.%H-%M-%S)"
+          echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+          echo "SHORT_SHA=${GITHUB_SHA:0:4}" >> $GITHUB_ENV
+          echo "DATE=$(TZ=Asia/Shanghai date +%Y-%m-%d.%H-%M-%S)" >> $GITHUB_ENV
 
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
-          # 所需要的体系结构，可以在 Available platforms 步骤中获取所有的可用架构
           platforms: linux/arm64,linux/amd64
-          # 镜像推送时间
           push: ${{ github.event_name != 'pull_request' }}
           build-args: |
             VERSION=${{ env.DATE }}
           tags: |
             cairry/watchlog:latest
-            cairry/watchlog:${{ env.BRANCH_NAME }}_${{ env.DATE }}_${{ env.SHORT_SHA }}
+            cairry/watchlog:${{ env.BRANCH_NAME }}.${{ env.DATE }}.${{ env.SHORT_SHA }}
