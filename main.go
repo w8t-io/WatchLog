@@ -1,52 +1,60 @@
 package main
 
 import (
+	"context"
 	"flag"
-	log "github.com/sirupsen/logrus"
+	"github.com/zeromicro/go-zero/core/logc"
 	"os"
-	"path/filepath"
-	log2 "watchlog/log"
+	"watchlog/log"
 )
 
 func main() {
-	// -template /pilot/filebeat.tpl -base /host -log-level debug
+	// Command-line flags
 	template := flag.String("template", "", "Template filepath for fluentd or filebeat.")
-	base := flag.String("base", "", "Directory which mount host root.")
-	level := flag.String("log-level", "INFO", "Log level")
 	flag.Parse()
 
-	if os.Getenv("DOCKER_API_VERSION") == "" {
-		err := os.Setenv("DOCKER_API_VERSION", "1.23")
-		if err != nil {
-			log.Errorf(err.Error())
-			return
-		}
+	// Set default Docker API version if not set
+	if err := setDefaultDockerAPIVersion(); err != nil {
+		logc.Errorf(context.Background(), err.Error())
+		return
 	}
 
+	// Validate runtime type
 	if os.Getenv("RUNTIME_TYPE") == "" {
-		log.Errorf("Please set service type, (docker|containerd)")
+		panic("Please set service type, (docker|containerd)")
 	}
 
-	baseDir, err := filepath.Abs(*base)
-	if err != nil {
-		panic(err)
-	}
-
-	if baseDir == "/" {
-		baseDir = ""
-	}
-
+	// Validate template
 	if *template == "" {
-		panic("template file can not be empty")
+		panic("template file cannot be empty")
 	}
 
-	log.SetOutput(os.Stdout)
-	logLevel, err := log.ParseLevel(*level)
-	if err != nil {
-		log.Errorf(err.Error())
-		panic(err)
+	// Run log processing
+	if err := log.Run(*template, getLogPrefix(), getBaseDir()); err != nil {
+		logc.Errorf(context.Background(), err.Error())
 	}
-	log.SetLevel(logLevel)
+}
 
-	log.Fatal(log2.Run(*template, baseDir))
+// setDefaultDockerAPIVersion sets the default Docker API version if not already set.
+func setDefaultDockerAPIVersion() error {
+	if os.Getenv("DOCKER_API_VERSION") == "" {
+		return os.Setenv("DOCKER_API_VERSION", "1.24")
+	}
+	return nil
+}
+
+// getLogPrefix retrieves the log prefix from the environment or defaults to "watchlog".
+func getLogPrefix() string {
+	if lp := os.Getenv("LOG_PREFIX"); len(lp) > 0 {
+		return lp
+	}
+	return "watchlog"
+}
+
+// getBaseDir get log base store dir or defaults to "/host/var/log/pods"
+func getBaseDir() string {
+	if lbd := os.Getenv("LOG_BASE_DIR"); len(lbd) > 0 {
+		return lbd
+	}
+	return "/host/var/log/pods"
 }

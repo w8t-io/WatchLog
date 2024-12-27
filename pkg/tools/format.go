@@ -1,4 +1,4 @@
-package util
+package tools
 
 import (
 	"fmt"
@@ -30,7 +30,6 @@ type SimpleConverter struct {
 }
 
 func init() {
-
 	simpleConverter := func(properties []string) FormatConverter {
 		return func(info *nodeInfo.LogInfoNode) (map[string]string, error) {
 			validProperties := make(map[string]bool)

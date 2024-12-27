@@ -1,8 +1,21 @@
 # 运行 WatchLog
 ## 确定参数配置
 - LOG_PREFIX：日志前缀标识, 默认是watchlog, 支持自定义
+- LOG_BASE_DIR：日志存储目录（挂载到WatchLog容器内的路径），默认 `/host/var/log/pods`
 - RUNTIME_TYPE：运行时类型，支持`docker` `containerd`
 - LOGGING_OUTPUT：日志输出类型，支持主流的`kafka` `elasticsearch` `redis` `file`等
+
+**LOG_PREFIX 详细**
+```yaml
+            - name: LOG_PREFIX
+              value: watchlog
+```
+
+**LOG_BASE_DIR 详细**
+```yaml
+            - name: LOG_BASE_DIR
+              value: "/host/var/log/pods"
+```
 
 **RUNTIME_TYPE 详细**
 ```yaml

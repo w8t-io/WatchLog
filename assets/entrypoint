@@ -35,9 +35,9 @@ def cleanup():
 def run():
     pilot_type = os.environ.get(ENV_PILOT_TYPE)
     if pilot_filebeat == pilot_type:
-        tpl_config = "/usr/share/filebeat/point/filebeat.tpl"
+        tpl_config = "/usr/share/filebeat/watchlog/filebeat.tpl"
 
-    os.execve('/usr/share/filebeat/point/point', ['/usr/share/filebeat/point/point', '-template', tpl_config, '-base', base, '-log-level', 'debug'],
+    os.execve('/usr/share/filebeat/watchlog/watchlog', ['/usr/share/filebeat/watchlog/watchlog', '-template', tpl_config],
               os.environ)
 
 
@@ -45,7 +45,7 @@ def config():
     pilot_type = os.environ.get(ENV_PILOT_TYPE)
     if pilot_filebeat == pilot_type:
         print "start log-pilot:", pilot_filebeat
-        subprocess.check_call(['/usr/share/filebeat/point/config.filebeat'])
+        subprocess.check_call(['/usr/share/filebeat/watchlog/config.filebeat'])
 
 
 if __name__ == '__main__':
