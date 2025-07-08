@@ -139,7 +139,7 @@ $(base)
 output.kafka:
     hosts: [$KAFKA_BROKERS]
     topic: '%{[topic]}'
-    compression: snappy
+    # compression: snappy
     ${KAFKA_VERSION:+version: ${KAFKA_VERSION}}
     ${KAFKA_USERNAME:+username: ${KAFKA_USERNAME}}
     ${KAFKA_PASSWORD:+password: ${KAFKA_PASSWORD}}
