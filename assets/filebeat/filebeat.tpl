@@ -4,7 +4,7 @@
   enabled: true
   paths:
       - {{ .HostDir }}/{{ .File }}
-  scan_frequency: 10s
+  scan_frequency: 3s
   fields_under_root: true
   {{if eq .Format "json"}}
   json.keys_under_root: true
