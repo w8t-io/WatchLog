@@ -1,10 +1,11 @@
 {{range .configList}}
-- type: log
+- type: container
   enabled: true
   paths:
       - {{ .HostDir }}/{{ .File }}
   exclude_files: ['\.gz$']
   scan_frequency: 10s
+  harvester_limit: 1024
   fields_under_root: true
   fields:
       {{range $key, $value := .Tags}}

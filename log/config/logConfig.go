@@ -17,7 +17,6 @@ type LogConfig struct {
 	Tags         map[string]string
 	EstimateTime bool
 	Stdout       bool
-	LogType      string
 }
 
 const LabelServiceLogsTmpl = "%s_"
@@ -65,7 +64,6 @@ func parseLogConfig(label, value string, jsonLogPath string) (LogConfig, error) 
 				"index": label,
 				"topic": label,
 			},
-			LogType: "container",
 		}
 	}
 	return *cfg, nil
