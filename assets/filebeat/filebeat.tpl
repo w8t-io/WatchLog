@@ -1,14 +1,11 @@
 {{range .configList}}
-- type: {{ .LogType }}
-  stream: all
+- type: log
   enabled: true
   paths:
       - {{ .HostDir }}/{{ .File }}
-  scan_frequency: 3s
+  exclude_files: ['\.gz$']
+  scan_frequency: 10s
   fields_under_root: true
-  {{if eq .Format "json"}}
-  json.keys_under_root: true
-  {{end}}
   fields:
       {{range $key, $value := .Tags}}
       {{ $key }}: {{ $value }}
