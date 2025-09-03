@@ -55,7 +55,7 @@ func parseLogConfig(label, value string, jsonLogPath string) (LogConfig, error) 
 
 	// 标准输出日志
 	if value == "stdout" {
-		logFile := filepath.Base(jsonLogPath) + "*"
+		logFile := filepath.Base(jsonLogPath)
 		cfg = &LogConfig{
 			File:    logFile,
 			Name:    label,

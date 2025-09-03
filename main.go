@@ -51,10 +51,10 @@ func getLogPrefix() string {
 	return "watchlog"
 }
 
-// getBaseDir get log base store dir or defaults to "/host/var/log/pods"
+// getBaseDir get log base store dir or defaults to "/var/log/containers"
 func getBaseDir() string {
 	if lbd := os.Getenv("LOG_BASE_DIR"); len(lbd) > 0 {
 		return lbd
 	}
-	return "/host/var/log/pods"
+	return "/var/log/containers"
 }

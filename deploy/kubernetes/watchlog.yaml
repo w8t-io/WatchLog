@@ -58,13 +58,14 @@ spec:
               name: containersock
             - mountPath: /var/run/docker.sock
               name: sock
-            - mountPath: /host
-              name: root
-              readOnly: true
+            - mountPath: /var/log/containers
+              name: var-log-contaienrs
+            - mountPath: /var/log/pods
+              name: var-log-pods
             - mountPath: /var/lib/filebeat
-              name: varlib
+              name: var-lib-filebeat
             - mountPath: /var/log/filebeat
-              name: varlog
+              name: var-log-filebeat
 
       restartPolicy: Always
 
@@ -82,14 +83,18 @@ spec:
             type: ""
           name: sock
         - hostPath:
-            path: /
+            path: /var/log/containers
             type: ""
-          name: root
+          name: var-log-contaienrs
+        - hostPath:
+            path: /var/log/pods
+            type: ""
+          name: var-log-pods
         - hostPath:
             path: /var/lib/filebeat
             type: DirectoryOrCreate
-          name: varlib
+          name: var-lib-filebeat
         - hostPath:
             path: /var/log/filebeat
             type: DirectoryOrCreate
-          name: varlog
+          name: var-log-filebeat

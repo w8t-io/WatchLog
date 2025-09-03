@@ -10,6 +10,7 @@ import (
 	"io"
 	"strings"
 	"watchlog/pkg/ctx"
+	"watchlog/pkg/runtime"
 )
 
 type Docker struct {
@@ -85,7 +86,7 @@ func (d *Docker) processContainer(containerID string) error {
 		Id:      containerJSON.ID,
 		Env:     logEnvs,
 		Labels:  containerJSON.Config.Labels,
-		LogPath: containerJSON.LogPath,
+		LogPath: fmt.Sprintf("%s_%s_%s-*.log", containerJSON.Config.Labels[runtime.KubernetesPodName], containerJSON.Config.Labels[runtime.KubernetesContainerNamespace], containerJSON.Config.Labels[runtime.KubernetesContainerName]),
 	}
 	return NewCollectFile(d.ctx, fields)
 }

@@ -157,7 +157,7 @@ func processCollectFile(c *ctx.Context, envs []string, meta containers.Container
 		Id:      meta.ID,
 		Env:     logEnvs,
 		Labels:  meta.Labels,
-		LogPath: fmt.Sprintf("%s_%s_*/%s/*.log", meta.Labels[runtime.KubernetesContainerNamespace], meta.Labels[runtime.KubernetesPodName], meta.Labels[runtime.KubernetesContainerName]),
+		LogPath: fmt.Sprintf("%s_%s_%s-*.log", meta.Labels[runtime.KubernetesPodName], meta.Labels[runtime.KubernetesContainerNamespace], meta.Labels[runtime.KubernetesContainerName]),
 	}
 	return NewCollectFile(c, fields)
 }
